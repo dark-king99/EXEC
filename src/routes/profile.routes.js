@@ -1,0 +1,13 @@
+import express from "express";
+import { authenticate } from "../middleware/auth.middleware.js";
+
+const router = express.Router();
+
+router.get("/profile", authenticate, (req, res) => {
+  res.json({
+    message: "Authenticated",
+    user: req.user
+  });
+});
+
+export default router;
