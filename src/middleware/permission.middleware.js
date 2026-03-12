@@ -6,8 +6,8 @@ export const requirePermission = (permissionKey) => {
 
       const userId = req.user.userId;
 
-      const roles = await prisma.userRole.findMany({
-        where: { userId },
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
         include: {
           role: {
             include: {
@@ -21,8 +21,12 @@ export const requirePermission = (permissionKey) => {
         }
       });
 
-      const permissions = roles.flatMap(r =>
-        r.role.rolePermissions.map(p => p.permission.key)
+      if (!user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const permissions = user.role.rolePermissions.map(
+        (entry) => entry.permission.key
       );
 
       if (!permissions.includes(permissionKey)) {

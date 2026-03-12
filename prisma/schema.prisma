@@ -19,14 +19,14 @@ model Tenant {
   slug      String   @unique
   createdAt DateTime @default(now())
 
-  users User[]
-  roles Role[]
+  users    User[]
+  roles    Role[]
+  contacts Contact[]
 }
 
-
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String @id @default(uuid())
+  email        String @unique
   passwordHash String
   firstName    String
   lastName     String
@@ -35,7 +35,7 @@ model User {
   tenant   Tenant @relation(fields: [tenantId], references: [id])
 
   roleId String
-  role   Role @relation(fields: [roleId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
 
   createdAt DateTime @default(now())
 }
@@ -53,20 +53,36 @@ model Role {
 }
 
 model Permission {
-  id        String   @id @default(uuid())
-  name      String
-  key       String   @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  key         String   @unique
+  description String?
+  createdAt   DateTime @default(now())
 
   rolePermissions RolePermission[]
+}
+
+model Contact {
+  id    String @id @default(uuid())
+  name  String
+  key   String @unique
+  email String
+
+  rolePermissions RolePermission[]
+  tenantId        String
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model RolePermission {
   roleId       String
   permissionId String
 
-  role         Role       @relation(fields: [roleId], references: [id])
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id])
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
 
   @@id([roleId, permissionId])
 }

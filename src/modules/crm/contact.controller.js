@@ -1,4 +1,5 @@
 import prisma from "../../config/database.js";
+import { createTenantContact, findContactsByTenant } from "./crm.service.js";
 
 export const listContacts = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ export const listContacts = async (req, res) => {
 
     res.json(contacts);
 
+    res.json(await findContactsByTenant(req.user.tenantId));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,6 +33,7 @@ export const createContact = async (req, res) => {
 
     res.status(201).json(contact);
 
+    res.status(201).json(await createTenantContact(req.user.tenantId, req.body));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -8,7 +8,7 @@ router.get(
   "/deals",
   requireAuth,
   requireRole("ENTERPRISE_ADMIN", "EMPLOYEE"),
-  (req, res) => {
+  (_req, res) => {
     res.json({ message: "Deals list" });
   }
 );
@@ -17,7 +17,7 @@ router.post(
   "/team/create",
   requireAuth,
   requireRole("ENTERPRISE_ADMIN"),
-  (req, res) => {
+  (_req, res) => {
     res.json({ message: "Team member created" });
   }
 );
